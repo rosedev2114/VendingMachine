@@ -24,6 +24,6 @@ The most obvious data to model was the explictly given inside of the JSON sample
 More implict data models included a way to track Financial Transaction, as well as a Currency System.
 (Transaction{Balance} MoneyEnum{Dollars, Coins}).
 
-The VendingMachineService is a bit bloated, when I first created the object, I anticipated a simple event loop and simple mutations of the Static Transaction and Inventory. If I had more time available and experimenting with different messaging appoarches in the Event Loop until something came out more ergonomic. 
+The VendingMachineService is a bit bloated, when I first created the object, I anticipated a simple event loop and simple mutations of the Static Transaction and Inventory. If I had more time available to experiment with different messaging appoarches in the Event Loop I might have came up with something more ergonomic. 
 
 Overall an Enjoyable Project!
