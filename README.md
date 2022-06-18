@@ -10,7 +10,7 @@ Provides a Java Application Console Interface to a simulated Vending Machine.
 # To Run
 ``` console
 mvn install clean
-mvn exec:java -Dexec.mainClass="com.ms3.project.vending.Main"
+mvn compile exec:java -Dexec.mainClass="com.ms3.project.vending.Main"
 ```
 # Process
 This was a fun exercise, that had some interesting problems to solve.
