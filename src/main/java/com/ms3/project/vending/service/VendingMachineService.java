@@ -54,7 +54,7 @@ public class VendingMachineService {
         writeLog("NEW BOOT: Balance: $" + TRANSCATION.getBalance());
 
         if( Files.exists(SAVE_PATH) == false ) {
-            writeLog("Warning: Config does not exist on boot.");
+            writeLog("WARNING: Config does not exist on boot.");
             STATE = MenuState.CONFIG; // Config is not created yet. Recover With new Config File Prompt
             return;
         }
@@ -81,19 +81,29 @@ public class VendingMachineService {
         }
     }
 
-    private static void saveInventory() throws IOException {
-        PrintWriter out = new PrintWriter(new FileWriter(SAVE_PATH.toFile()));
-        out.write( INVENTORY.toJson() );
+    private static void saveInventory() {
+        try (PrintWriter out = new PrintWriter(new FileWriter(SAVE_PATH.toFile()))) {
+            String jsonString = INVENTORY.toJson();
+            out.write(jsonString);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private static void loadInventory() throws IOException {
-        Reader reader = Files.newBufferedReader(SAVE_PATH);
-        INVENTORY.fromJson(reader);
+    private static void loadInventory() {
+        try(Reader reader = Files.newBufferedReader(SAVE_PATH)) {
+            INVENTORY.fromJson(reader);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private static void loadInventory(File fileLocation) throws IOException {
-        Reader reader = Files.newBufferedReader(fileLocation.toPath());
-        INVENTORY.fromJson(reader);
+    private static void loadInventory(File fileLocation) {
+        try(Reader reader = Files.newBufferedReader(fileLocation.toPath())) {
+            INVENTORY.fromJson(reader);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void start() {

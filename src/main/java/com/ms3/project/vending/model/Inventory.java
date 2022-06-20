@@ -4,6 +4,7 @@ import com.ms3.project.vending.utils.Constants;
 
 import com.google.gson.Gson;
 
+import java.io.FileWriter;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +76,6 @@ public class Inventory {
         Gson gson = new Gson();
         return gson.toJson(this);
     }
-
 
     public String indexToKeyCode(int index) {
         if(this.config == null  ) {
