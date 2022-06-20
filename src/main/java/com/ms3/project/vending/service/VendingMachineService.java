@@ -1,6 +1,5 @@
 package com.ms3.project.vending.service;
 
-import com.google.gson.Gson;
 import com.ms3.project.vending.model.Inventory;
 import com.ms3.project.vending.model.Item;
 import com.ms3.project.vending.model.MenuState;
@@ -11,6 +10,7 @@ import com.ms3.project.vending.view.Menu;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.time.LocalDateTime;
 import java.nio.file.Path;
 import java.io.BufferedReader;
 import java.io.File;
@@ -50,34 +50,20 @@ public class VendingMachineService {
 
 
     public VendingMachineService() { 
-
         // Add logger to 
         writeLog("NEW BOOT: Balance: $" + TRANSCATION.getBalance());
 
         if( Files.exists(SAVE_PATH) == false ) {
-
             writeLog("Warning: Config does not exist on boot.");
             STATE = MenuState.CONFIG; // Config is not created yet. Recover With new Config File Prompt
-
             return;
         }
-        
-        boolean loadSucessful = false;
 
         try {
-
-            Reader reader = Files.newBufferedReader(SAVE_PATH);
-            INVENTORY.loadJson(reader);
-
+            loadInventory();
         } catch(Exception ex) { 
-
             writeLog("Failed to Load Config JSON:" + ex);
             STATE = MenuState.CONFIG; // Failed to either, read-file, parse-json or invalid data format. Recover With new Config File Prompt.
-
-        }
-
-        if( loadSucessful ) {
-            saveJson();
         }
 
     }
@@ -87,22 +73,27 @@ public class VendingMachineService {
         SCANNER.nextLine().toUpperCase();
     }
 
-    private static void saveJson() {
-        try (PrintWriter out = new PrintWriter(new FileWriter(SAVE_PATH.toFile()))) {
-            Gson gson = new Gson();
-            String jsonString = gson.toJson(INVENTORY);
-            out.write(jsonString);
-        } catch (Exception e) {
+    private static void writeLog(String msg) {
+        try {
+            Files.write(LOG_PATH, ( LocalDateTime.now() + " : " + msg + "\n").getBytes(), StandardOpenOption.APPEND, StandardOpenOption.CREATE); 
+        } catch( IOException e ){ 
             e.printStackTrace();
         }
     }
 
-    private static void writeLog(String msg) {
-        try {
-            Files.write(LOG_PATH, (msg + "\n").getBytes(), StandardOpenOption.APPEND, StandardOpenOption.CREATE); 
-        } catch( IOException e ){ 
-            e.printStackTrace();
-        }
+    private static void saveInventory() throws IOException {
+        PrintWriter out = new PrintWriter(new FileWriter(SAVE_PATH.toFile()));
+        out.write( INVENTORY.toJson() );
+    }
+
+    private static void loadInventory() throws IOException {
+        Reader reader = Files.newBufferedReader(SAVE_PATH);
+        INVENTORY.fromJson(reader);
+    }
+
+    private static void loadInventory(File fileLocation) throws IOException {
+        Reader reader = Files.newBufferedReader(fileLocation.toPath());
+        INVENTORY.fromJson(reader);
     }
 
     public void start() {
@@ -170,7 +161,11 @@ public class VendingMachineService {
                             TRANSCATION.getBalance().toString()
                         );
                        
-                        saveJson();
+                        try (PrintWriter out = new PrintWriter(new FileWriter(SAVE_PATH.toFile()))) {
+                            out.write( INVENTORY.toJson() );
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
  
                     } catch (Exception ex) {
                         System.out.println("Invalid input, not a valid menu choice." + ex);
@@ -342,8 +337,7 @@ public class VendingMachineService {
                         if( tempFile.exists() && tempFile.isFile() ) {
                             try {
 
-                                Reader reader = Files.newBufferedReader(Paths.get(tempFile.getAbsolutePath()));
-                                INVENTORY.loadJson(reader);
+                                loadInventory(tempFile);
                                 STATE = MenuState.VENDING;
                                 loadSucessful = true;
 
@@ -355,7 +349,11 @@ public class VendingMachineService {
 
                             }
                             if( loadSucessful ) {
-                                saveJson();
+                                try{
+                                    saveInventory();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                         } else {
 
@@ -386,7 +384,7 @@ public class VendingMachineService {
 
                         try {
 
-                            INVENTORY.loadJson(INPUT);
+                            INVENTORY.fromJson(INPUT);
                             STATE = MenuState.VENDING;
                             loadSucessful = true;
 
@@ -399,7 +397,11 @@ public class VendingMachineService {
                         }
 
                         if( loadSucessful ){
-                            saveJson();
+                            try{
+                                saveInventory();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
 
                     }

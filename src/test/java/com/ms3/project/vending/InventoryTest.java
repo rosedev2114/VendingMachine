@@ -32,7 +32,7 @@ public class InventoryTest {
         }
         """;
 
-        inv.loadJson(json);
+        inv.fromJson(json);
         assertEquals(inv.getConfig().getRows(), 4);
         assertEquals(inv.getConfig().getColumns(), 8);
 
@@ -56,7 +56,7 @@ public class InventoryTest {
             \"items\": [{\"name\": \"Snickers\",\"amount\": 10,\"price\": \"$1.35\"}]
         }
         """;
-        inv.loadJson(json);
+        inv.fromJson(json);
         assertEquals(inv.indexToKeyCode(0), "A1");
     }
 
@@ -72,7 +72,7 @@ public class InventoryTest {
             \"items\": [{\"name\": \"Snickers\",\"amount\": 10,\"price\": \"$1.35\"}]
         }
         """;
-        inv.loadJson(json);
+        inv.fromJson(json);
         Optional<Item> item = inv.findByCode("A1");
         assertTrue(item.isPresent());
     }
@@ -90,7 +90,7 @@ public class InventoryTest {
             \"items\": [{\"name\": \"Snickers\",\"amount\": 10,\"price\": \"$1.35\"}]
         }
         """;
-        inv.loadJson(json);
+        inv.fromJson(json);
         Optional<Item> item = inv.findByCode("A3");
         assertTrue(item.isEmpty());
     }
@@ -107,7 +107,7 @@ public class InventoryTest {
             \"items\": [{\"name\": \"Snickers\",\"amount\": 10,\"price\": \"$1.35\"}, {\"name\": \"Snickers\",\"amount\": 10,\"price\": \"$1.35\"}]
         }
         """;
-        inv.loadJson(json);
+        inv.fromJson(json);
     }
 
     @Test
@@ -122,7 +122,7 @@ public class InventoryTest {
             \"items\": [{\"name\": \"Snickers\",\"amount\": 10,\"price\": \"$1.35\"}]
         }
         """;
-        inv.loadJson(json);
+        inv.fromJson(json);
         inv.decrementItem("A1");
         Optional<Item> item = inv.findByCode("A1");
         assertEquals(item.get().getAmount(), 9);
@@ -140,7 +140,7 @@ public class InventoryTest {
             \"items\": [{\"name\": \"Snickers\",\"amount\": 10,\"price\": \"$1.35\"}]
         }
         """;
-        inv.loadJson(json);
+        inv.fromJson(json);
         Item overwriteItem = new Item("Snickers","$1.50",10); 
         inv.updateItem("A1",overwriteItem);
         Optional<Item> item = inv.findByCode("A1");
@@ -159,7 +159,7 @@ public class InventoryTest {
             \"items\": []
         }
         """;
-        inv.loadJson(json);
+        inv.fromJson(json);
         Item insertItem = new Item("Snickers","$1.50",10); 
         inv.insertItem(insertItem);
         Optional<Item> item = inv.findByCode("A1");
@@ -178,7 +178,7 @@ public class InventoryTest {
             \"items\": []
         }
         """;
-        inv.loadJson(json);
+        inv.fromJson(json);
         Item insertItem = new Item("Snickers","$1.50",10); 
         inv.insertItem(insertItem);
         inv.insertItem(insertItem);

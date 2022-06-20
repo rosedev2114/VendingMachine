@@ -8,22 +8,8 @@ public class Config {
     private int columns;
 
     public Config(int rows, int columns) {
-
-        if(rows <= 0 || rows > Constants.UPPER_ALPHABET.length()) {
-            throw new IllegalArgumentException(
-                "Config rows can not represent row need a positive non-zero value and less than " +
-                String.valueOf(Constants.UPPER_ALPHABET.length()) +
-                "to represent the current alphabet: " +
-                Constants.UPPER_ALPHABET
-            );
-        }
-
-        if( columns <= 0 ) {
-            throw new IllegalArgumentException("Config columns can needs to be a positive non-zero value");
-        }
-
-        this.rows = rows;
-        this.columns = columns;
+        this.setRows(rows);
+        this.setColumns(columns);
     }
 
 
@@ -41,7 +27,7 @@ public class Config {
 
     public void setRows(int rows) {
 
-        if(rows <= 0 || rows > Constants.UPPER_ALPHABET.length()) {
+        if( rows <= 0 || rows > Constants.UPPER_ALPHABET.length()) {
             throw new IllegalArgumentException(
                 "Config rows can not represent row need a positive non-zero value and less than " +
                 String.valueOf(Constants.UPPER_ALPHABET.length()) +

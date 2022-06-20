@@ -51,7 +51,7 @@ public class Inventory {
         return this.items;
     }
 
-    public void loadJson(String json) {
+    public void fromJson(String json) {
         Gson g = new Gson();
         Inventory LoadInventory = g.fromJson(json, Inventory.class);
         if( LoadInventory == null || LoadInventory.config == null || LoadInventory.items == null ) { 
@@ -61,7 +61,7 @@ public class Inventory {
         this.setItems(LoadInventory.items);
     }
 
-    public void loadJson(Reader jsonFile) {
+    public void fromJson(Reader jsonFile) {
         Gson g = new Gson();
         Inventory LoadInventory = g.fromJson(jsonFile, Inventory.class);
         if( LoadInventory == null || LoadInventory.config == null || LoadInventory.items == null  ) { 
@@ -71,18 +71,15 @@ public class Inventory {
         this.setItems(LoadInventory.items);
     }
 
-    public String toJsonString() {
-        Inventory SaveInventory = new Inventory();
-        SaveInventory.setConfig(this.config);
-        SaveInventory.setItems(this.items);
+    public String toJson() {
         Gson gson = new Gson();
-        return gson.toJson(SaveInventory);
+        return gson.toJson(this);
     }
 
 
     public String indexToKeyCode(int index) {
         if(this.config == null  ) {
-            throw new IllegalStateException("Config or Items are not initialized");
+            throw new IllegalStateException("Config is not initialized");
         }
         if( index >= config.maxCapacity() || index < 0 ) {
             throw new IndexOutOfBoundsException("No keycode can exist for this index");
@@ -93,7 +90,7 @@ public class Inventory {
     private int getIndex(String keycode) {
 
         if(this.config == null  ) {
-            throw new IllegalStateException("Config or Items are not initialized");
+            throw new IllegalStateException("Config is not initialized");
         }
 
         if( keycode == null || keycode.length() < 2 ) {
@@ -150,7 +147,7 @@ public class Inventory {
 
     public void insertItem(Item newItem) {
         if( this.config == null ) {
-            throw new IllegalStateException("Config or Items are not initialized");
+            throw new IllegalStateException("Config is not initialized");
         }
 
         if(  this.items.size() >= this.config.maxCapacity() ) {
@@ -162,7 +159,7 @@ public class Inventory {
 
     public void updateItem(String keycode, Item updateItem) {
         if( this.config == null  ) {
-            throw new IllegalStateException("Config or Items are not initialized");
+            throw new IllegalStateException("Config is not initialized");
         }
         this.items.set(this.getIndex(keycode), updateItem);
     }
@@ -170,6 +167,9 @@ public class Inventory {
 
     public void decrementItem(String keycode) {
 
+        if( this.config == null ){
+            throw new IllegalStateException("Config is not initialized");
+        }
         Optional<Item> item = this.findByCode(keycode);
         if( item.isEmpty() ) { 
             throw new IndexOutOfBoundsException("Product does not exist.");
