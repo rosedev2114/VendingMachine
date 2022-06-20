@@ -161,8 +161,8 @@ public class VendingMachineService {
                             TRANSCATION.getBalance().toString()
                         );
                        
-                        try (PrintWriter out = new PrintWriter(new FileWriter(SAVE_PATH.toFile()))) {
-                            out.write( INVENTORY.toJson() );
+                        try {
+                            saveInventory();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
